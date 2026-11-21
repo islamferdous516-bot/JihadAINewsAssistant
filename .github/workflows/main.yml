@@ -13,20 +13,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # এই ধাপে আপনার ফোল্ডারে কী কী ফাইল আছে তা দেখা যাবে
+      - name: Check Project Files Structure
+        run: |
+          echo "=== ফাইল লিস্ট ==="
+          ls -la
+          echo "=== app ফোল্ডার চেক ==="
+          ls -la app || echo "ERROR: app ফোল্ডার নেই!"
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          accept-android-sdk-licenses: true
-          log-accepted-android-sdk-licenses: false
-
       - name: Grant Execute Permission
-        run: chmod +x gradlew
+        run: chmod +x gradlew || echo "ERROR: gradlew ফাইল নেই!"
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug --no-daemon --stacktrace
