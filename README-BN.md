@@ -1,30 +1,34 @@
-# Jihad AI News Assistant — Android MVP
+# Jihad AI News Assistant
 
-## কী আছে
-- RSS থেকে খবর সংগ্রহ (BBC বাংলা ও DW বাংলা ফিড)
-- SQLite-এ স্থানীয়ভাবে খবর সংরক্ষণ
-- অফলাইনে সংরক্ষিত খবর পড়া ও শিরোনাম/বর্ণনায় সার্চ
-- WorkManager দিয়ে নেটওয়ার্ক থাকলে ৬ ঘণ্টা অন্তর ব্যাকগ্রাউন্ড সিঙ্ক
-- সাধারণ extractive offline summary
+এটি Android-এর জন্য একটি প্রাথমিক MVP (Minimum Viable Product)।
+
+## কী কাজ করে
+- BBC বাংলা RSS থেকে অনলাইনে খবর আনার চেষ্টা করে।
+- সর্বশেষ পাওয়া খবর ফোনে ক্যাশ হিসেবে রাখে।
+- ইন্টারনেট না থাকলে আগে সংরক্ষিত খবর দেখায়।
+- ক্যাশ করা খবরের শিরোনাম ও বিবরণে সার্চ করা যায়।
+- খবর আলাদাভাবে সেভ করে পরে অফলাইনে দেখা যায়।
+- মূল সংবাদ লিংক ব্রাউজারে খোলে।
 
 ## গুরুত্বপূর্ণ সীমাবদ্ধতা
-এই MVP-তে জেনারেটিভ LLM বা AI API এখনো যুক্ত নয়। `AiService`-এর সারাংশটি স্থানীয় extractive fallback; এটি প্রকৃত LLM সারাংশ নয়। পরবর্তী ধাপে API key নিরাপদভাবে সংরক্ষণ, AI provider নির্বাচন এবং চাইলে ছোট on-device model যোগ করতে হবে। API key কখনো GitHub-এ commit করবেন না।
+- এই সংস্করণে কোনো প্রকৃত LLM/AI মডেল বা AI-লিখিত সারাংশ নেই।
+- বিবরণ RSS ফিড থেকে আসে; এটি সম্পূর্ণ সংবাদপাঠ নয়।
+- অফলাইন সুবিধা শুধু আগে ডাউনলোড/সেভ করা খবরের জন্য।
+- RSS উৎস ভবিষ্যতে পরিবর্তিত হতে পারে।
 
-## ফোন দিয়ে APK তৈরি
-1. GitHub-এ নতুন repository তৈরি করুন: `JihadAINewsAssistant`
-2. এই ZIP-এর সব ফাইল repository-র root-এ upload করুন (ZIP ফাইলটি নিজে নয়; Extract করে ফাইলগুলো upload করুন)।
-3. GitHub repository → Actions → `Build Android APK` → Run workflow চাপুন।
-4. Build শেষ হলে workflow run-এর নিচে Artifacts থেকে `Jihad-AI-News-Assistant-debug` ডাউনলোড করুন।
-5. ZIP artifact Extract করুন। `app-debug.apk` ফোনে খুলে Install দিন। প্রয়োজন হলে Android Settings-এ ওই browser/file manager-এর “Install unknown apps” অনুমতি দিন।
+## Build
+Codemagic-এ GitHub repository সংযুক্ত করে root-এ থাকা `codemagic.yaml` ব্যবহার করুন।
+Build artifact: `app/build/outputs/apk/debug/app-debug.apk`
 
-## Build requirements
-- JDK 17
-- Android SDK Platform 35
-- Gradle 8.9
-- Android Gradle Plugin 8.7.3
+স্থানীয়ভাবে:
+```bash
+chmod +x gradlew
+./gradlew assembleDebug
+```
 
-## নোট
-- Android WorkManager periodic task-এর সর্বনিম্ন interval ১৫ মিনিট; এখানে ৬ ঘণ্টা নির্ধারণ করা হয়েছে। Android ব্যাটারি ব্যবস্থাপনার কারণে সিঙ্ক ঠিক নির্দিষ্ট মিনিটে নাও হতে পারে।
-- RSS feed পরিবর্তন বা বন্ধ হতে পারে। প্রয়োজনে `NewsRepository.kt`-এ ফিড URL বদলান।
-- প্রথমবার খবর আনতে ইন্টারনেট লাগবে। এরপর সংরক্ষিত খবর অফলাইনে পড়া যাবে।
-- এটি debug APK; Play Store release-এর জন্য signing configuration ও release build দরকার।
+## Project
+- Package: `com.jihad.ai.newsassistant`
+- Min Android: 6.0 (API 23)
+- Compile/Target SDK: 35
+- Java: 17
+- Gradle: 8.9
